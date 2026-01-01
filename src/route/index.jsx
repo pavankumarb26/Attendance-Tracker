@@ -7,6 +7,11 @@ import Table from "../Components/Table";
 import SubjectWiseComponent from "../Components/SubjectWiseComponent";
 
 import App from "../App";
+import PrivacyPolicy from "../Components/PrivacyPolicy";
+import TermandConditions from "../Components/TermandConditions";
+import Aboutus from "../Components/Aboutus";
+import ContactUs from "../Components/ContactUs";
+import WaterSortPuzzle from "../Components/WaterSortPuzzle ";
 
 
 const router = createBrowserRouter([
@@ -34,6 +39,26 @@ const router = createBrowserRouter([
         path: "subjectwise",
         element: <SubjectWiseComponent />,
       },
+      {
+        path : "privacy-policy",
+        element: <PrivacyPolicy/>,
+      },
+      {
+        path: "terms-and-conditions",
+        element : <TermandConditions/>,
+      },
+      {
+        path : 'about',
+        element: <Aboutus/>,
+      },
+      {
+        path: 'contact',
+        element: <ContactUs/>
+      },
+      {
+        path: 'game',
+        element: <WaterSortPuzzle/>
+      }
     ],
   },
 ]);

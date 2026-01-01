@@ -441,7 +441,7 @@ const Home = () => {
                 <label htmlFor="present" className='text-xs font-semibold'>
                   Number of periods attended
                 </label>
-                
+
                 <input
                   type='number'
                   id='present'
@@ -702,13 +702,13 @@ const Home = () => {
               ))}
             </div>
           </div>
+
         </div>
       </div>
 
-      <FooterComponent />
 
 
-
+      
 
     </section>
 

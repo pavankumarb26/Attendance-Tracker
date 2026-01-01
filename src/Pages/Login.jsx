@@ -55,7 +55,7 @@ const Login = () => {
         <p className='font-bold text-3xl'>Attendance</p>
         <p className='font-bold text-4xl text-emerald-500'>Tracker</p>
       </div>
-      <div className='top-0 bottom-0 left-0 right-0 flex justify-center items-end h-105  '>
+      <div className='top-0 bottom-0 left-0 right-0 flex justify-center items-center h-105  '>
         <div className='border border-[#222528] rounded-2xl w-85'>
           <form action="" className='grid p-5 rounded-2xl gap-4' onSubmit={handleSubmit}>
             <div className='flex justify-center items-center gap-1'>
@@ -79,7 +79,13 @@ const Login = () => {
         </div>
       </div>
       <div className='font-bold text-center mt-10'>Login once, use it forever</div>
-      
+      <div className='fixed bottom-0 flex items-center justify-evenly text-slate-400 text-2xs  w-full'>
+        <button onClick={() => navigate('/privacy-policy')}>Privacy Policy</button>
+        <button onClick={() => navigate('/terms-and-conditions')}>Terms & Conditions:</button>
+        <button onClick={() => navigate('/about')}>About Us</button>
+        <button onClick={() => navigate('/contact')}>Contact Us</button>
+      </div>
+
       
     </section>
 
