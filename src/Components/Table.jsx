@@ -5,13 +5,14 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Navbar from './Navbar';
+import AttendanceStreakCalculator from './AttendanceStreakCalculator';
 const Table = () => {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [progress, setProgress] = useState(0);
-
+    const [heatmap, setHeatmap] = useState()
     const code = localStorage.getItem("code");
     const redgNo = localStorage.getItem("redgNo");
     const password = localStorage.getItem("password");
@@ -41,6 +42,8 @@ const Table = () => {
                 }, 200);
                 const registerData = await axios.get(register_api);
                 setData(registerData.data.attendance_table.rows);
+                setHeatmap(registerData.data)
+                
             } catch (err) {
                 console.error("Timetable fetch failed");
             } finally {
@@ -83,7 +86,7 @@ const Table = () => {
 
     return (
 
-        <section className='flex  justify-center bg-black min-h-screen'>
+        <section className='flex flex-col justify-center bg-black min-h-screen'>
             {/* <Header /> */}
             <Navbar />
             <div className='bg-black mt-5 p-4 text-slate-200  overflow-y-auto '>
@@ -145,6 +148,10 @@ const Table = () => {
                         </div>
                     )
                 }
+            </div>
+
+            <div>
+                <AttendanceStreakCalculator data={heatmap}/>
             </div>
 
 
