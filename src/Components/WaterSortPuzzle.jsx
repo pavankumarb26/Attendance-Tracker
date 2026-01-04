@@ -10,11 +10,11 @@ const WaterSortPuzzle = () => {
     const levels = [];
     
     const colorPalette = [
-      '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', 
-      '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
-      '#F8B739', '#52B788', '#E63946', '#A8DADC',
-      '#FF5733', '#C70039', '#900C3F', '#581845',
-      '#FFC300', '#DAF7A6', '#33FF57', '#3357FF'
+      '#f50202', '#07f5e5', '#00d0ff', '#e06900', 
+      '#eb056c', '#ffcc00', '#ad00f7', '#0262f2',
+      '#ffe0a3', '#00f583', '#4d151a', '#a9e6e8',
+      '#ff3308', '#c70039', '#2e2025', '#581845',
+      '#99ff00', '#009100', '#00a2fa', '#0021fa'
     ];
     
     for (let level = 1; level <= 50; level++) {
