@@ -5,7 +5,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { MdAccountBox } from "react-icons/md"
 import logo from '../assets/logo.png'
 import { setState } from './Home';
-import { MessageCircle, Search, X, Mic, Instagram } from 'lucide-react';
+import { MessageCircle, Search, X, Mic } from 'lucide-react';
 
 const Login = () => {
   
@@ -48,31 +48,6 @@ const Login = () => {
       : `https://web.whatsapp.com/send?text=${text}`;
     
     window.open(whatsappUrl, '_blank');
-  };
-
-  const handleInstagramShare = () => {
-    const url = 'https://attendancetracker.co.in';
-    
-    // Check if mobile
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-      // Try to open Instagram app
-      window.location.href = 'instagram://';
-      
-      // Fallback to Instagram web if app doesn't open
-      setTimeout(() => {
-        window.open('https://www.instagram.com/', '_blank');
-      }, 500);
-    } else {
-      // For desktop, open Instagram and copy URL to clipboard
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Link copied! Open Instagram and paste it in your story or post.');
-        window.open('https://www.instagram.com/', '_blank');
-      }).catch(() => {
-        window.open('https://www.instagram.com/', '_blank');
-      });
-    }
   };
 
   const handleOnChange = (e) => {
@@ -170,25 +145,16 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Social Share Section */}
-      <div className='flex flex-col items-center gap-3 my-4'>
+      {/* WhatsApp Share Section */}
+      <div className='flex flex-col items-center gap-2 my-4'>
         <p className='font-extrabold'>Share to your friends</p>
-        <div className='flex gap-3'>
-          <button
-            onClick={handleWhatsAppShare}
-            className='flex items-center gap-2 bg-green-500 text-white p-1.5 rounded-lg hover:bg-green-600 transition-colors font-bold text-xs'
-          >
-            <MessageCircle size={18} />
-            <span>WhatsApp</span>
-          </button>
-          <button
-            onClick={handleInstagramShare}
-            className='flex items-center gap-2 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white p-1.5 rounded-lg hover:from-purple-600 hover:via-pink-600 hover:to-orange-600 transition-colors font-bold text-xs'
-          >
-            <Instagram size={18} />
-            <span>Instagram</span>
-          </button>
-        </div>
+        <button
+          onClick={handleWhatsAppShare}
+          className='flex items-center gap-2 bg-green-500 text-white p-1.5 rounded-lg hover:bg-green-600 transition-colors font-bold text-xs'
+        >
+          <MessageCircle size={20} />
+          <span>Share on WhatsApp</span>
+        </button>
       </div>
 
       <div className="w-full bg-black text-white rounded-4xl">
