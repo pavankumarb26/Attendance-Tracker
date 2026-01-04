@@ -380,7 +380,7 @@ const Home = () => {
 
       <div className=' mt-5 mx-1 flex items-center justify-around'>
 
-        <div className=' bg-emerald-200 pt-2   h-40 w-40 rounded-3xl py-1 font-bold text-sm '>
+        <div className={`${totalPercentage >= 75 ? "bg-emerald-200" : "bg-orange-300"}  pt-2   h-40 w-40 rounded-3xl py-1 font-bold text-sm `}>
           {
             totalPercentage >= 75 ? (
               <div className='flex flex-col text-black font-extrabold items-center justify-center '>
@@ -404,7 +404,7 @@ const Home = () => {
                 <div>Periods to attend</div>
                 <div className="flex flex-row w-full items-center justify-center">
 
-                  <div className='text-6xl mt-6 text-red-500'>{hoursNeeded}</div>
+                  <div className='text-6xl mt-6 text-red-700'>{hoursNeeded}</div>
                   {/* <MdBatteryAlert size={25} className='text-red-500' /> */}
 
                 </div>
@@ -623,6 +623,7 @@ const Home = () => {
       <div className=' sm:105  mt-5 rounded-md'>
         <div className='my-5'>
           <h1 className='text-center text-2xl font-bold text-slate-200'>Attendance as per data</h1>
+          <p className='text-slate-200 text-center font-bold'>At the end of the day</p>
         </div>
         
         <div className='flex flex-col items-center justify-center gap-2'>
@@ -633,20 +634,16 @@ const Home = () => {
                 <div key={index} >
                   {
                     index === 0 && (
-                      <div className={`  ${(item.absent) ? "text-[#fc9999] border border-red-500" : "text-slate-200  "}  rounded font-bold flex gap-5 text-2xs `}>
-                      <p>Date </p>
-
-
-                      <p className='font-extrabold'>Percentage</p>
-                      <p>Attendance</p>
+                      <div className={` text-slate-200 rounded  flex justify-center gap-5 mb-1 `}>
+                      
                       <div className='flex items-center gap-4'>
                         <div className='flex gap-0.5'>
                         <p className='w-4 h-4 rounded bg-green-400'></p>
-                        <p>-skip</p>
+                        <p className='bg-lime-400 text-black rounded px-1 font-extrabold text-xs'>-periods can skip</p>
                         </div>
                         <div className='flex gap-0.5'>
                         <p className='w-4 h-4 rounded bg-red-400'></p>
-                        <p>-hours needed</p>
+                        <p className='bg-red-500 text-black rounded px-1 font-extrabold text-xs'>-additional hours needed</p>
                         </div>
                       </div>
                     </div>
@@ -692,7 +689,7 @@ const Home = () => {
 
 
 
-      <div className='flex justify-center mt-4 mb-5'>
+      <div className='flex justify-center mt-4 mb-15'>
         <div className='w-105 text-slate-200 bg-black border  border-[#222528]  p-2 rounded'>
 
           <label className=' flex flex-col py-1 px-2'>
