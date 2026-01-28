@@ -11,6 +11,11 @@ import PrivacyPolicy from "../Components/PrivacyPolicy";
 import TermandConditions from "../Components/TermandConditions";
 import Aboutus from "../Components/Aboutus";
 import ContactUs from "../Components/ContactUs";
+import Material from "../Components/Material";
+import Year from "../Components/Year";
+import Pdfs from "../Components/Pdfs";
+import Form from "../Components/Form";
+import Subject from "../Components/Subject";
 import WaterSortPuzzle from "../Components/WaterSortPuzzle";
 
 
@@ -54,6 +59,22 @@ const router = createBrowserRouter([
       {
         path: 'contact',
         element: <ContactUs/>
+      },
+      {
+        path : "material",
+        element : <Material/>
+      },
+      {
+        path : "material/:branch",
+        element : <Year/>
+      },
+      {
+        path :"material/:branch/:year",
+        element : <Pdfs/>
+      },
+      {
+        path : "material/:branch/:year/:subject",
+        element : <Subject/>
       },
       {
         path: 'game',

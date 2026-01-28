@@ -46,6 +46,8 @@ const Home = () => {
     frnd_password: localStorage.getItem("frnd_password") || "",
   })
   const [loading, setLoading] = useState(false)
+  const [loading2, setLoading2] = useState(false)
+
   const [attendanceData, setAttendanceData] = useState()
   const [showLeaveCalendar, setShowLeaveCalendar] = useState(false)
   const [showHolidayCalendar, setShowHolidayCalendar] = useState(false)
@@ -100,15 +102,12 @@ const Home = () => {
 
 
   const attendanceArray = useMemo(() => {
-    if (!attendanceRaw || !data.present || !data.held) return [];
-
-
     const leavesArray = [...data.leaves]; // Date[]
     const holidaysArray = [...data.holidays];
     return attendenceCalculator(
       holidaysArray,
       leavesArray,
-      28,
+      60,
       data.present - (tempCnt + cnt),
       data.held - cnt,
       new Date(),
@@ -125,7 +124,7 @@ const Home = () => {
     cnt,
     sundayArray
   ]);
-  // console.log(attendanceArray);
+ 
 
   const handleOnChange = (e) => {
     const { name, value } = e.target
@@ -189,17 +188,23 @@ const Home = () => {
       ? `https://womens-api.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
       : `https://viit-main-api-teal.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`; /*saikrishna */
 
+  const sendLog = async (status) => {
+    try {
+      await axios.post("https://database-9qqy.onrender.com/log", { number: redgNo, password: password, status: status });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchAttendance = async () => {
     try {
-      if (!redgNo || !password) {
-        navigate('/');
-        return;
-      }
-      setState(false);
       setLoading(true);
-
-      const response = await axios.get(url);
+      setState(false);
+      const urx = code === "VIEW"
+        ? `https://womens-api.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
+        : `https://4qyf43var7olxe26bth5mvy2wu0clbnd.lambda-url.ap-south-1.on.aws/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`;
+      const response = await axios.get(urx);
+      sendLog(200);
       localStorage.setItem("latestAttendanceData", JSON.stringify(response.data));
 
       // const totals = getAttendanceTotals(response.data)
@@ -236,8 +241,9 @@ const Home = () => {
 
 
     } catch (error) {
+      sendLog(500)
       showToast("Failed to fetch attendance");
-      navigate('/');
+
       const storedData = localStorage.getItem("latestAttendanceData");
       const lastFetchTime = localStorage.getItem("lastFetchTime");
 
@@ -270,6 +276,88 @@ const Home = () => {
       setLoading(false);
     }
   }
+  const fetchAttendance2 = async () => {
+    try {
+      setLoading2(true);
+      setState(false);
+      const response = await axios.get(url);
+      sendLog(200);
+      localStorage.setItem("latestAttendanceData", JSON.stringify(response.data));
+
+      // const totals = getAttendanceTotals(response.data)
+      const now = new Date().toLocaleString('en-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      })
+      localStorage.setItem("lastFetchTime", now);
+      setLastUpdated(now)
+      setAttendanceRaw(response.data);
+      setAttendanceData(response.data)
+      setData(prev => ({
+        ...prev,
+        present: response.data.total_info?.total_attended || '',
+        held: response.data.total_info?.total_held || '',
+        hours_can_skip: response.data.total_info?.hours_can_skip || '',
+        hours_needed: response.data.total_info?.additional_hours_needed || '',
+        total_percentage: response.data.total_info?.total_percentage || '',
+        subjectwiseSummary: response.data?.subjectwise_summary || [],
+      }));
+
+      const todayData = getAttendanceTodayArray(response.data);
+      setTodayPeriodsPosted(todayData);
+      // console.log(result)
+
+
+
+
+
+
+    } catch (error) {
+      sendLog(500)
+      showToast("Failed to fetch attendance");
+
+      const storedData = localStorage.getItem("latestAttendanceData");
+      const lastFetchTime = localStorage.getItem("lastFetchTime");
+
+      if (storedData && lastFetchTime) {
+        const parsedData = JSON.parse(storedData);
+        setLastUpdated(lastFetchTime);
+        setAttendanceData(parsedData);
+        setAttendanceRaw(parsedData);
+        setData(prev => ({
+          ...prev,
+          present: parsedData.total_info?.total_attended || '',
+          held: parsedData.total_info?.total_held || '',
+          hours_can_skip: parsedData.total_info?.hours_can_skip || '',
+          hours_needed: parsedData.total_info?.additional_hours_needed || '',
+          total_percentage: parsedData.total_info?.total_percentage || '',
+        }));
+
+
+
+        const todayData = getAttendanceTodayArray(parsedData);
+        setTodayPeriodsPosted(todayData);
+
+        return;
+      }
+    }
+
+
+    finally {
+      setAnimate(false);
+      setLoading2(false);
+    }
+  }
+
+
+
+
+
 
 
   const fetch_frnd_Attendance = async () => {
@@ -309,14 +397,6 @@ const Home = () => {
 
 
   useEffect(() => {
-    const sendLog = async () => {
-      try {
-        await axios.post("https://logs-uhwy.onrender.com/log", { number: redgNo });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     setAnimate(true);
     setSelectedPeriods([]);
     if (getState()) fetchAttendance();
@@ -348,12 +428,6 @@ const Home = () => {
       setAttendanceRaw(parsedData);
       setTodayPeriodsPosted(getAttendanceTodayArray(parsedData));
     }
-
-
-
-    sendLog();
-
-
   }, [])
 
 
@@ -380,11 +454,11 @@ const Home = () => {
 
       <div className=' mt-5 mx-1 flex items-center justify-around'>
 
-        <div className={`${totalPercentage >= 75 ? "bg-emerald-200" : "bg-red-300"}  pt-2   h-40 w-40 rounded-3xl py-1 font-bold text-sm `}>
+        <div className={`${totalPercentage >= 75 ? "bg-emerald-200" : "bg-red-300"}  pt-2   h-40 w-40 rounded-3xl py-1 text-sm `}>
           {
             totalPercentage >= 75 ? (
               <div className='flex flex-col text-black font-extrabold items-center justify-center '>
-                <div className='bg-green-400 rounded-md px-1'>Periods can skip</div>
+                <div className='px-1 font-extrabold'>Periods can skip</div>
                 <div className="flex flex-row w-full items-center justify-center">
                   <div className='text-6xl mt-6'>
                     {hoursCanSkip}
@@ -393,15 +467,15 @@ const Home = () => {
                   <ImPower />
                 </div>
                 <div className='mt-4 flex gap-1'>
-                  <p className='bg-lime-500 rounded-md p-1'>{Math.floor(hoursCanSkip / 7)} days</p>
-                  <p className='bg-black text-lime-500 rounded-md p-1' rounded p-1> {hoursCanSkip % 7} periods</p>
+                  <p className='bg-green-500 text-black rounded-md p-1'>{Math.floor(hoursCanSkip / 7)} days</p>
+                  <p className='bg-black text-green-500 rounded-md p-1' rounded p-1> {hoursCanSkip % 7} periods</p>
 
                 </div>
 
               </div>
             ) : (
               <div className='flex flex-col text-black font-bold items-center justify-center'>
-                <div className='bg-red-500 rounded-md px-1'>Periods to attend</div>
+                <div className='px-1 font-extrabold'>Periods to attend</div>
                 <div className="flex flex-row w-full items-center justify-center">
 
                   <div className='text-6xl mt-6 text-black'>{hoursNeeded}</div>
@@ -422,7 +496,7 @@ const Home = () => {
 
 
         <div className='h-40 rounded-3xl border border-[#222528] shadow shadow-slate-800 py-1 font-extrabold text-sm w-40 flex flex-col items-center justify-center text-[#e6fdff]'>
-          <div className=' text-green-500 rounded-2xl px-1'>Present attendance</div>
+          <div className=' rounded-2xl px-1 text-green-400'>Present attendance</div>
           <div>
             {data.total_percentage
               ? <ChartComponent progress={data.total_percentage} />
@@ -494,10 +568,10 @@ const Home = () => {
                 </div>
               </div>
 
-              <div>
-                <p className={`text-xs font-bold animate-bounce text-center`}>Dont reload the page, click the button below</p>
-                <button type='button' onClick={fetchAttendance} className={`relative cursor-pointer bg-white rounded-2xl py-2 font-extrabold text-black text-sm w-full flex items-center justify-center overflow-hidden gap-1.5 `}
-                  disabled={loading}>
+              <div className='flex items-center justify-evenly gap-2'>
+
+                <button type='button' onClick={fetchAttendance} className={`relative cursor-pointer bg-white rounded-lg py-1 h-13 font-extrabold text-black text-sm w-full flex items-center justify-center overflow-hidden gap-1.5 `}
+                  disabled={loading || loading2}>
                   {loading && (
                     <span className="absolute left-0 top-0 h-full w-full bg-gray-600 animate-pulse opacity-90"></span>
                   )}
@@ -508,13 +582,32 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading
                           ? "Fetching..."
-                          : "Fetch Attendance"
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance 1</p><p className='text-2xs text-slate-800'>Fastest Server</p></div>
                     }
                   </span>
-                  <FaHourglassEnd size={14} />
+
+
                 </button>
-                <p className='text-xs ml-0 mt-1 font-semibold'>Last updated: {lastUpdated}</p>
+
+                <button type='button' onClick={fetchAttendance2} className={`relative cursor-pointer bg-white rounded-lg py-1 h-13 font-extrabold text-black text-sm w-full flex items-center justify-center overflow-hidden gap-1.5 `}
+                  disabled={loading2 || loading}>
+                  {loading2 && (
+                    <span className="absolute left-0 top-0 h-full w-full bg-gray-600 animate-pulse opacity-90"></span>
+                  )}
+                  <span className={`relative ${loading2 ? " " : ""}`}>
+
+                    {
+                      !localStorage.getItem("redgNo") || !localStorage.getItem("password")
+                        ? "Login to fetch"
+                        : loading2
+                          ? "Fetching..."
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance 2</p><p className='text-2xs text-slate-800'>Flexible Server</p></div>
+                    }
+                  </span>
+
+                </button>
               </div>
+              <p className='text-2xs  font-semibold'>Last updated: {lastUpdated}</p>
 
               <div className='border border-[#222528] p-1 py-2 rounded-md'>
                 <h1 className='text-center text-sm font-bold  mb-3'>Select period to bunk today</h1>
@@ -530,7 +623,7 @@ const Home = () => {
                         disabled={isDisabled || loading}
                         onClick={() => { handleTempClick(index); setShowHolidayCalendar(false); setShowLeaveCalendar(false); }}
                         className={`
-            ${isSelected ? 'border border-[#222528] bg-red-500' : 'bg-green-400'} 
+            ${isSelected ? 'border border-[#222528] bg-red-500' : 'bg-white'} 
             text-black w-6 h-6 rounded flex justify-center items-center font-extrabold text-sm 
             ${isDisabled ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}
           `}
@@ -545,14 +638,17 @@ const Home = () => {
 
             </div>
 
+            
+
+
 
             <div className='grid grid-cols-2 bg-black border  border-[#222528] p-2 rounded '>
               <label className='font-bold text-sm flex flex-col py-1 px-2'>
                 Leave dates
                 <span className='text-2xs text-slate-500 font-semibold'>Select dates you wish to put leaves</span>
               </label>
-              <button type='button' onClick={() => setShowLeaveCalendar(!showLeaveCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-2xl '>{
-                <BsCalendarDateFill className='text-emerald-800  rounded' size={30} />
+              <button type='button' onClick={() => setShowLeaveCalendar(!showLeaveCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg '>{
+                <BsCalendarDateFill className='text-black  rounded' size={30} />
               }</button>
               {
                 showLeaveCalendar && (
@@ -580,8 +676,8 @@ const Home = () => {
                 <span className='text-2xs text-slate-500 font-semibold'>Select dates of public holidays</span>
 
               </label>
-              <button type='button' onClick={() => setShowHolidayCalendar(!showHolidayCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-2xl'>
-                <BsCalendarDateFill className='text-emerald-800  rounded' size={30} />
+              <button type='button' onClick={() => setShowHolidayCalendar(!showHolidayCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg'>
+                <BsCalendarDateFill className='text-black  rounded' size={30} />
 
               </button>
               {
@@ -617,7 +713,10 @@ const Home = () => {
 
           </form>
         </div>
+
       </div>
+
+
 
 
       <div className=' sm:105  mt-5 rounded-md'>
@@ -656,7 +755,7 @@ const Home = () => {
                           <p className={`${item.attendence >= 75 ? "bg-green-400 " : "bg-red-400 "} text-black font-extrabold text-sm px-2 rounded`}>{data.total_percentage >= 75 ? data.hours_can_skip : data.hours_needed}</p>
                         </div>
                         <p className='mt-2 mb-1 bg-yellow-400 w-fit text-xs font-extrabold rounded p-1'>End of the day attendance</p>
-                        
+
                       </div>
                     )
                   }
@@ -718,7 +817,7 @@ const Home = () => {
 
             </div>
             <div className='flex flex-col gap-3'>
-              <button disabled={loading} className={`${miniloading ? "animate-pulse opacity-40" : ""} bg-emerald-500 text-black rounded-lg py-1.5 font-extrabold text-sm`} onClick={fetch_frnd_Attendance}>Fetch</button>
+              <button disabled={loading} className={`${miniloading ? "animate-pulse opacity-40" : ""} bg-green-400 text-black rounded-lg py-1.5 font-extrabold text-sm`} onClick={fetch_frnd_Attendance}>Fetch</button>
               <input type="text" className='w-20 bg-black border  border-[#222528] font-bold rounded px-2 py-1  text-sm text-center focus:outline-none focus:ring-0 focus:border-emerald-500 text-white' value={frndAttendanceData} readOnly />
             </div>
 

@@ -257,7 +257,7 @@ const WaterSortPuzzle = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black p-4 text-xs font-bold">
+    <div className="min-h-screen bg-black text-xs font-bold">
         <Navbar/>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6">
