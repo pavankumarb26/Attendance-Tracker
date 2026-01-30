@@ -17,7 +17,7 @@ const Material = () => {
             return (
               <div
                 onClick={() => navigate(`/material/${item}`)}
-                key={index} className='text-black text-3xl font-extrabold bg-slate-200 w-41 h-20 flex items-center justify-center rounded-lg'>
+                key={index} className='text-green-800 text-3xl font-extrabold bg-yellow-300 w-41 h-20 flex items-center justify-center rounded-lg'>
                 {item}
               </div>
             )
