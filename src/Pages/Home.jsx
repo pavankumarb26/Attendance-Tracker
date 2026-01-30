@@ -114,7 +114,7 @@ const SwipeableAttendanceItem = ({ item, index, onSwipeLeft, onSwipeRight, onSwi
         </div>
       </div>
 
-      <p className='text-xs text-black bg-white rounded p-0.5 font-bold animate-pulse text-center mb-2'>
+      <p className='text-xs text-black bg-pink-300 rounded py-1 px-2 font-bold animate-pulse text-center mb-2'>
         👉 Swipe right for Leave | Swipe left for Holiday 👈
       </p>
 
@@ -263,7 +263,7 @@ const Home = () => {
       ? new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
       : today;
   const maxDate = new Date();
-  maxDate.setMonth(maxDate.getMonth() + 1);
+  maxDate.setMonth(maxDate.getMonth() + 2);
   const sundayArray = useMemo(() => {
     return getSundays(today).map(sun => sun.getDate());
   }, []);
@@ -775,7 +775,7 @@ const Home = () => {
                     item.message ? (
                       <p key={index} className='text-xs text-center'>{item.message}</p>
                     ) : (
-                      <div key={index} className={`${item.attendance_today?.trim().toUpperCase().includes("A") ? 'bg-red-500 ' : 'bg-[#00ce86] '} text-black rounded flex gap-1 font-extrabold px-1 text-sm`}>
+                      <div key={index} className={`${item.attendance_today?.trim().toUpperCase().includes("A") ? 'bg-red-500 ' : 'bg-[#03ff81] '} text-black rounded flex gap-1 font-extrabold px-1 text-sm`}>
                         <span>{item.subject}:</span>
                         <span>{item.attendance_today}</span>
                       </div>
@@ -796,7 +796,7 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance 1</p><p className='text-2xs text-slate-800'>Fastest Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Fastest Server</p></div>
                     }
                   </span>
                 </button>
@@ -812,12 +812,12 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading2
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance 2</p><p className='text-2xs text-slate-800'>Flexible Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Flexible Server</p></div>
                     }
                   </span>
                 </button>
               </div>
-              <p className='text-2xs  font-semibold'>Last updated: {lastUpdated}</p>
+              <p className='text-2xs font-extrabold bg-yellow-300 w-fit px-1 rounded text-black'>Last updated: {lastUpdated}</p>
 
               <div className='border border-[#222528] p-1 py-2 rounded-md'>
                 <h1 className='text-center text-sm font-bold  mb-3'>Select period to bunk today</h1>
@@ -833,8 +833,8 @@ const Home = () => {
                         disabled={isDisabled || loading}
                         onClick={() => { handleTempClick(index); setShowHolidayCalendar(false); setShowLeaveCalendar(false); }}
                         className={`
-            ${isSelected ? 'border border-[#222528] bg-red-500' : 'bg-white'} 
-            text-black w-6 h-6 rounded flex justify-center items-center font-extrabold text-sm 
+            ${isSelected ? 'border border-[#222528] bg-slate-600' : 'bg-white'} 
+            text-black w-10 h-6 rounded flex justify-center items-center font-extrabold text-sm 
             ${isDisabled ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}
           `}
                       >

@@ -137,7 +137,7 @@ const Login = () => {
                 VIEW
               </div>
             </div>
-            <button className='bg-emerald-500 text-black cursor-pointer rounded py-1.5 font-bold text-sm'>
+            <button className='bg-[#03ff81] text-black cursor-pointer rounded py-1.5 font-bold text-sm'>
               Submit
             </button>
             <div className='font-bold text-center'>Login once, use it forever</div>

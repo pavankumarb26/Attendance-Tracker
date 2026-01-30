@@ -64,13 +64,13 @@ const AttendanceStreakCalculator = ({ response }) => {
 
   return (
     <div className="flex justify-evenly items-center text-sm mb-50 text-slate-200">
-      <div className="rounded-lg font-bold bg-lime-300 text-black flex flex-col items-center justify-center px-3 py-2">
-        <p className="text-center">Present Streak🔥</p>
-        <div className="font-extrabold flex gap-1 items-center"><span className="bg-lime-500 p-1 rounded-md font-extrabold">{stats.max_p_streak_count}periods</span> <span className="bg-black text-lime-500 p-1 rounded-md font-extrabold">{Math.floor(stats.max_p_streak_count / 7)} days</span></div>
+      <div className="rounded-2xl font-bold bg-slate-100 text-black flex flex-col items-center gap-2 justify-center px-4 py-5">
+        <p className="text-center font-extrabold">Present Streak🔥</p>
+        <div className="font-extrabold flex gap-1 items-center"><span className="bg-gray-400 p-1 rounded-md font-extrabold">{stats.max_p_streak_count}periods</span> <span className="bg-slate-300 text-black p-1 rounded-md font-extrabold">{Math.floor(stats.max_p_streak_count / 7)} days</span></div>
       </div>
-      <div className="rounded-lg font-bold bg-orange-300 text-black flex flex-col items-center justify-center px-3 py-2">
-        <p className="text-center">Absent Streak🔥 </p>
-        <div className="font-extrabold flex gap-1 items-center"><span className="bg-red-500 p-1 rounded-md font-extrabold">{stats.max_a_streak_count}periods</span> <span className="bg-black text-red-500 p-1 rounded-md font-extrabold">{Math.floor(stats.max_a_streak_count / 7)} days</span></div>
+      <div className="rounded-2xl font-bold bg-slate-100 text-black flex flex-col items-center gap-2 justify-center px-4 py-5">
+        <p className="text-center font-extrabold">Absent Streak🔥 </p>
+        <div className="font-extrabold flex gap-1 items-center"><span className="bg-gray-400 p-1 rounded-md font-extrabold">{stats.max_a_streak_count}periods</span> <span className="bg-slate-300 text-black p-1 rounded-md font-extrabold">{Math.floor(stats.max_a_streak_count / 7)} days</span></div>
       </div>
     </div>
   );

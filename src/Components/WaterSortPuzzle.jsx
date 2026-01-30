@@ -261,23 +261,23 @@ const WaterSortPuzzle = () => {
         <Navbar/>
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-white mb-2">Water Sort Puzzle</h1>
+          <h1 className="text-2xl font-bold text-white mb-2">Water Sort Puzzle</h1>
           <div className="flex justify-center items-center gap-6 text-lg">
-            <span className="px-4 py-2 bg-gray-800 text-white rounded-lg shadow">Level: {currentLevel}/100</span>
-            <span className="px-4 py-2 bg-gray-800 text-white rounded-lg shadow">Moves: {moveCount}</span>
+            <span className="px-4 py-2 text-sm bg-[#222528] opacity-80 text-white rounded-lg shadow">Level: {currentLevel}/100</span>
+            <span className="px-4 py-2 text-sm bg-[#222528] opacity-80 text-white rounded-lg shadow">Moves: {moveCount}</span>
           </div>
         </div>
 
         {isComplete && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-8 text-center shadow-2xl max-w-md">
-              <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-gray-800 mb-2">Level Complete!</h2>
-              <p className="text-gray-600 mb-6">Completed in {moveCount} moves</p>
+          <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+            <div className="bg-black border border-[#222528] text-slate-200 rounded-2xl p-8 text-center shadow-2xl max-w-md">
+              
+              <h2 className="text-lg font-bold  mb-2">Level Complete!</h2>
+              <p className=" mb-6">Completed in {moveCount} moves</p>
               {currentLevel < 100 ? (
                 <button
                   onClick={nextLevel}
-                  className="px-8 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 transition flex items-center gap-2 mx-auto"
+                  className="px-5 py-1 bg-green-500 text-white rounded-md font-bold hover:bg-green-600 transition flex items-center gap-2 mx-auto"
                 >
                   <Play className="w-5 h-5" />
                   Next Level
@@ -327,25 +327,25 @@ const WaterSortPuzzle = () => {
           ))}
         </div>
 
-        <div className="flex justify-center gap-4 flex-wrap">
+        <div className="flex justify-center gap-2 ">
           <button
             onClick={undo}
             disabled={history.length === 0}
-            className="px-6 py-3 bg-yellow-500 text-white rounded-lg font-semibold hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <RotateCcw className="w-5 h-5" />
+            
+          <RotateCcw className="w-5 h-5" />
             Undo
           </button>
           <button
             onClick={resetLevel}
-            className="px-6 py-3 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition flex items-center gap-2"
+            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-red-600 transition flex items-center gap-2"
           >
-            <RotateCcw className="w-5 h-5" />
             Reset Level
           </button>
           <button
             onClick={clearProgress}
-            className="px-6 py-3 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition"
+            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-purple-600 transition"
           >
             Start from Level 1
           </button>
