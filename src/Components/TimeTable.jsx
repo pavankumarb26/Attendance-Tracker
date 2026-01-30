@@ -175,7 +175,7 @@ const TimeTable = () => {
                 todayData.length > 0 ? (
                   <div className='grid grid-cols-5 gap-0.5'>
                     {todayData.map((period, index) => (
-                      <p key={index} className='text-xs mt-1 font-extrabold  text-green-400 rounded-md  w-fit '>{index + 1} - {period}</p>
+                      <p key={index} className='text-xs mt-1 font-extrabold  text-pink-300 rounded-md  w-fit '>{index + 1} - {period}</p>
                     ))}
                   </div>
                 ) : (

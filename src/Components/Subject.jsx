@@ -5,6 +5,7 @@ import axios from 'axios'
 import Add from './Add';
 import Navbar from './Navbar';
 import LoadingSpinner from './LoadingSpinner';
+import Search from './Search';
 
 const Subject = () => {
     const [data, setData] = useState([]);
@@ -71,9 +72,10 @@ const Subject = () => {
 
     return (
         <section className='bg-black min-h-screen relative'>
+            <Search/>
             <Add />
             <Navbar />
-            <h2 className='text-slate-200 font-extrabold text-center mb-2'>{subject}</h2>
+            <h2 className='text-slate-200 font-extrabold text-center mb-2 text-2xl'>{subject}</h2>
             {
                 loading ? (
                     <LoadingSpinner size={40} color='emerald' text='Loading...' />
@@ -86,9 +88,10 @@ const Subject = () => {
                                         <FaFilePdf size={50} />
                                         <p className='text-xs font-bold'>{pdf.Title}</p>
                                         <div className='flex gap-2 text-xs font-bold'>
-                                            <button className='bg-red-500 p-1 rounded px-2' onClick={() => handleView(pdf)}>View</button>
-                                            <button className='bg-red-500 p-1 rounded px-2' onClick={() => handleDownload(pdf)}>Download</button>
+                                            <button className='bg-[#03ff81] p-1 rounded px-2' onClick={() => handleView(pdf)}>View</button>
+                                            <button className='bg-[#03ff81] p-1 rounded px-2' onClick={() => handleDownload(pdf)}>Download</button>
                                         </div>
+                                        <p className='text-2xs pt-2'>Uploaded by <span className='font-bold'>{pdf.RedgNo}</span></p>
                                     </div>
                                 )
                             })

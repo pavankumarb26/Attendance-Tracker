@@ -7,6 +7,7 @@ import Navbar from './Navbar'
 import Add from './Add'
 import axios from 'axios';
 import { FaFolder } from "react-icons/fa6";
+import Search from './Search';
 const Pdfs = () => {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,21 +35,22 @@ const Pdfs = () => {
   return (
     <section className=" bg-black min-h-screen">
       <Navbar />
+      <Search/>
       <button onClick={load}>Load</button>
       <Add />
       {
         loading ? (
           <LoadingSpinner/>
         ) : (
-          <div className='flex flex-wrap justify-evenly gap-3 pb-4 bg-black'>
+          <div className='grid grid-cols-3 gap-3 pb-4 bg-black'>
          {
           subjects.length > 0 ? (
             subjects.map(subject => (
             <div
               onClick={() => navigate(`/material/${branch}/${year}/${subject}`)}
-              key={subject} className='text-white font-extrabold  w-41 h-20 flex flex-col items-center justify-center gap-2 rounded-lg'>
-                <FaFolder size={60} />
-                <p className='text-center text-xs'>
+              key={subject} className='text-white font-extrabold w-fit px-6  flex flex-col items-center justify-center gap-2 rounded-lg'>
+                <FaFolder size={70} className='text-[#03ff81]' />
+                <p className='text-center text-sm'>
 
               {subject}
                 </p>
