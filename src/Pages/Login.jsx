@@ -8,14 +8,14 @@ import { setState } from './Home';
 import { MessageCircle, Search, X, Mic } from 'lucide-react';
 
 const Login = () => {
-  
+
   const navigate = useNavigate();
   const [data, setData] = useState({
     redgNo: localStorage.getItem("redgNo") || "",
     password: localStorage.getItem("password") || "",
+    code: localStorage.getItem("code") || "VIIT",
   })
-  const [code, setCode] = useState("VIIT")
-  const [isViit, setIsViit] = useState(true);
+  const [isViit, setIsViit] = useState(data.code === "VIIT");
   const [searchText, setSearchText] = useState('attendance tracker viit');
 
   const searchResults = [
@@ -37,16 +37,16 @@ const Login = () => {
     const title = 'Attendance Tracker';
     const url = 'https://attendancetracker.co.in';
     const description = 'Track student attendance instantly with this simple tracking system!';
-    
+
     const text = encodeURIComponent(`${title}\n\n${description}\n\n${url}`);
-    
+
     // Check if mobile
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    
-    const whatsappUrl = isMobile 
-      ? `whatsapp://send?text=${text}` 
+
+    const whatsappUrl = isMobile
+      ? `whatsapp://send?text=${text}`
       : `https://web.whatsapp.com/send?text=${text}`;
-    
+
     window.open(whatsappUrl, '_blank');
   };
 
@@ -61,12 +61,20 @@ const Login = () => {
   }
 
   const handleViit = () => {
-    setCode("VIIT");
+    setData((prev) => {
+      return {
+        ...prev, code: "VIIT"
+      }
+    });
     setIsViit(true);
   }
 
   const handleView = () => {
-    setCode("VIEW");
+    setData((prev) => {
+      return {
+        ...prev, code: "VIEW"
+      }
+    });
     setIsViit(false);
   }
 
@@ -74,7 +82,7 @@ const Login = () => {
     e.preventDefault()
     const redgNo = data.redgNo
     const password = data.password
-    const selectedcode = code
+    const selectedcode = data.code
     localStorage.setItem("redgNo", redgNo)
     localStorage.setItem("password", password)
     localStorage.setItem("code", selectedcode)
@@ -93,7 +101,7 @@ const Login = () => {
       </div>
 
       <div className='top-0 bottom-0 left-0 right-0 flex justify-center items-center h-105'>
-        <div className='border border-[#222528] rounded-2xl w-85'>
+        <div className='border border-[#222528] bg-[#0a0a0a] rounded-2xl w-85'>
           <form action="" className='grid p-5 rounded-2xl gap-4' onSubmit={handleSubmit}>
             <div className='flex justify-center items-center gap-1'>
               <img src={logo} alt='logo' className='w-8 h-8 rounded-md' />
@@ -101,37 +109,37 @@ const Login = () => {
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="RedgNo" className='font-semibold text-sm'>Registration Number</label>
-              <input 
-                type='text' 
-                id='RedgNo' 
-                placeholder='22L31A05O8' 
-                className='bg-black border border-[#222528] text-center font-semibold rounded px-2 py-1 text-sm' 
-                onChange={handleOnChange} 
-                name="redgNo" 
-                value={data.redgNo} 
+              <input
+                type='text'
+                id='RedgNo'
+                placeholder='22L31A05O8'
+                className='bg-black border border-[#222528] text-center font-semibold rounded px-2 py-1 text-sm'
+                onChange={handleOnChange}
+                name="redgNo"
+                value={data.redgNo}
               />
             </div>
             <div className='flex flex-col gap-2'>
               <label htmlFor="pass" className='font-semibold text-sm'>Password</label>
-              <input 
-                type='text' 
-                id='pass' 
-                placeholder='26112007' 
-                className='border border-[#222528] bg-black text-center rounded font-semibold px-2 py-1 text-sm' 
-                onChange={handleOnChange} 
-                name='password' 
-                value={data.password} 
+              <input
+                type='text'
+                id='pass'
+                placeholder='26112007'
+                className='border border-[#222528] bg-black text-center rounded font-semibold px-2 py-1 text-sm'
+                onChange={handleOnChange}
+                name='password'
+                value={data.password}
               />
             </div>
             <div className='flex justify-around gap-2'>
-              <div 
-                className={`${isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`} 
+              <div
+                className={`${isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`}
                 onClick={handleViit}
               >
                 VIIT
               </div>
-              <div 
-                className={`${!isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`} 
+              <div
+                className={`${!isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`}
                 onClick={handleView}
               >
                 VIEW
@@ -157,6 +165,7 @@ const Login = () => {
         </button>
       </div>
 
+      <p className='font-extrabold text-lg mt-8'>Search on Google</p>
       <div className="w-full bg-black text-white rounded-4xl">
         {/* Search Bar */}
         <div className="px-2 py-4">
@@ -198,10 +207,10 @@ const Login = () => {
         {/* Search Results */}
         <div className="px-2 py-3">
           {searchResults.map((result, index) => (
-            <a 
-              key={index} 
-              href={result.url} 
-              target="_blank" 
+            <a
+              key={index}
+              href={result.url}
+              target="_blank"
               rel="noopener noreferrer"
               className="block mb-4 hover:bg-gray-900 rounded p-2 transition-colors"
             >
@@ -236,6 +245,61 @@ const Login = () => {
           ))}
         </div>
       </div>
+
+      <div className="w-full max-w-4xl px-4 py-12 mb-20 text-slate-600 text-2xs">
+        <div className="border-t border-[#222528] pt-10">
+          <h2 className=" font-bold mb-6">Comprehensive Student Attendance Management for VIIT & VIEW</h2>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <section>
+              <h3 className="text-[#03ff81] font-bold mb-3 uppercase tracking-wider ">Why Track Your Attendance?</h3>
+              <p className=" leading-relaxed mb-4">
+                At <strong>Vignan's Institute of Information Technology (VIIT)</strong> and <strong>VIEW</strong>, maintaining a 75% attendance threshold is a mandatory academic requirement. Our platform provides a seamless way for students to monitor their daily presence, laboratory sessions, and theory classes in real-time.
+              </p>
+            </section>
+
+            <section>
+              <h3 className="text-[#03ff81] font-bold mb-3 uppercase tracking-wider">Predictive Analytics</h3>
+              <p className=" leading-relaxed mb-4">
+                Don't just view your percentage—manage it. Our system calculates how many more classes you need to attend to reach your goal or how many you can afford to miss while staying in the "Safe Zone" for mid-term and end-term examinations.
+              </p>
+            </section>
+          </div>
+
+          <div className="bg-[#111] border border-[#222528] rounded-xl p-6 mt-8">
+            <h3 className="font-bold mb-4 text-center">Platform Features & Resources</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="p-2">
+                <div className="text-[#03ff81] font-bold text-lg">Real-Time</div>
+                <div className="  uppercase">Data Sync</div>
+              </div>
+              <div className="p-2">
+                <div className="text-[#03ff81] font-bold text-lg">Branch-Wise</div>
+                <div className="  uppercase">Material</div>
+              </div>
+              <div className="p-2">
+                <div className="text-[#03ff81] font-bold text-lg">Time Table</div>
+
+              </div>
+              <div className="p-2">
+                <div className="text-[#03ff81] font-bold text-lg">Exam</div>
+                <div className="  uppercase">Preparation</div>
+              </div>
+            </div>
+          </div>
+
+          <article className="mt-10">
+            <h3 className="text-white font-bold mb-4">Academic Resources for Engineering Students</h3>
+            <p className=" leading-relaxed">
+              Beyond tracking, we host a dedicated repository of study materials for all major branches including
+              <strong> CSE, ECE, EEE, MECH, and IT</strong>. Students can access semester-wise PDFs, previous year
+              question papers, and subject-specific notes to enhance their academic performance. This integrated
+              approach ensures that attendance management and exam preparation go hand-in-hand.
+            </p>
+          </article>
+        </div>
+      </div>
+      
 
       <div className='fixed bottom-0 flex items-center justify-evenly bg-black text-slate-400 text-2xs w-full py-2'>
         <button onClick={() => navigate('/privacy-policy')}>Privacy Policy</button>

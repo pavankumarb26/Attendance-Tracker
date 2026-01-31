@@ -21,7 +21,7 @@ const Year = () => {
             return (
               <div
               onClick={()=> navigate(`/material/${branch}/${item}`)}
-              key={index} className='text-white text-3xl font-extrabold bg-[#03ff81] w-41 h-20 flex items-center justify-center rounded-lg'>
+              key={index} className='text-green-900 text-3xl font-extrabold bg-[#03ff81] w-41 h-20 flex items-center justify-center rounded-lg'>
                 {item} YEAR
               </div>
             )

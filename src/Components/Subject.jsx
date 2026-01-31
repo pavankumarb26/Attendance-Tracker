@@ -113,11 +113,11 @@ const Subject = () => {
                 loading ? (
                     <LoadingSpinner size={40} color='emerald' text='Loading...' />
                 ) : (
-                    <div className='bg-black text-slate-200 flex flex-wrap justify-evenly gap-2.5 pb-4'>
+                    <div className='bg-black text-slate-200 flex flex-wrap justify-evenly gap-2.5 pb-25'>
                         {
                             data.map((pdf, index) => {
                                 return (
-                                    <div key={index} className='border-2 border-[#222528] px-2 py-3 h-fit rounded-lg flex flex-col items-center gap-1 w-45' >
+                                    <div key={index} className='border-2 border-[#222528] px-2 py-3 h-fit rounded-lg flex flex-col items-center gap-1 w-43' >
                                         <div className='w-full flex justify-end' onClick={() => { setEditPdfId((prev) => ({ ...prev, id: pdf._id, Branch: pdf.Branch, Year: pdf.Year, RedgNo: pdf.RedgNo })); setOptions(true) }}>
                                             {
                                                 options ? (
@@ -134,10 +134,10 @@ const Subject = () => {
                                             }
                                         </div>
                                         <FaFilePdf size={50} />
-                                        <p className='text-xs font-bold max-w-[150px] truncate'>{pdf.Title}</p>
+                                        <p className='text- font-2xsxs font-bold max-w-[150px] truncate'>{pdf.Title}</p>
                                         <div className='flex gap-2 text-xs font-bold'>
-                                            <button className='bg-[#03ff81] text-black p-1 rounded px-2' onClick={() => handleView(pdf)}>View</button>
-                                            <button className='bg-[#03ff81] text-black p-1 rounded px-2' onClick={() => handleDownload(pdf)}>Download</button>
+                                            <button className='bg-[#03ff81] text-black py-0.5 font-2xs rounded px-2' onClick={() => handleView(pdf)}>View</button>
+                                            <button className='bg-[#03ff81] text-black py-0.5 font-2xs rounded px-2' onClick={() => handleDownload(pdf)}>Download</button>
                                         </div>
                                         <p className='text-2xs pt-1'>Uploaded by <span className='font-bold'>*****{pdf.RedgNo.slice(-4)}</span></p>
                                         <div className='flex flex-wrap gap-1'>

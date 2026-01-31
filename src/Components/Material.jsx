@@ -17,13 +17,13 @@ const Material = () => {
       <p className='text-white font-bold pt-1 text-xs text-center'>Veelu aythe pdfs share chey dude, maha aythe pass avutaru</p>
       <Add/>
 
-      <div className='flex justify-evenly items-center gap-5 flex-wrap bg-black'>
+      <div className='flex justify-evenly items-center gap-5 flex-wrap bg-black pb-25'>
         {
           arr.map((item, index) => {
             return (
               <div
                 onClick={() => navigate(`/material/${item}`)}
-                key={index} className='text-white text-3xl font-extrabold bg-[#03ff81] w-41 h-20 flex items-center justify-center rounded-lg'>
+                key={index} className='text-green-900 text-3xl font-extrabold bg-[#03ff81] w-41 h-20 flex items-center justify-center rounded-lg'>
                 {item}
               </div>
             )

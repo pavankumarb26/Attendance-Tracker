@@ -796,7 +796,7 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Fastest Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-xs text-slate-800'>Fastest Server</p></div>
                     }
                   </span>
                 </button>
@@ -812,12 +812,12 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading2
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Flexible Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-xs text-slate-800'>Flexible Server</p></div>
                     }
                   </span>
                 </button>
               </div>
-              <p className='text-2xs font-bold  w-fit px-1 rounded text-white'>Last updated: {lastUpdated}</p>
+              <p className='text-xs font-bold  w-fit px-1 rounded text-white'>Last updated: {lastUpdated}</p>
 
               <div className='border border-[#222528] p-1 py-2 rounded-md'>
                 <h1 className='text-center text-sm font-bold  mb-3'>Select period to bunk today</h1>
@@ -849,7 +849,7 @@ const Home = () => {
             <div className='grid grid-cols-2 bg-black border  border-[#222528] p-2 rounded '>
               <label className='font-bold text-sm flex flex-col py-1 px-2'>
                 Leave dates
-                <span className='text-2xs text-slate-500 font-semibold'>Select dates you wish to put leaves</span>
+                <span className='text-xs text-slate-500 font-semibold'>Select dates you wish to put leaves</span>
               </label>
               <button type='button' onClick={() => setShowLeaveCalendar(!showLeaveCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg '>{
                 <BsCalendarDateFill className='text-black  rounded' size={30} />
@@ -875,7 +875,7 @@ const Home = () => {
             <div className='grid grid-cols-2  bg-black border  border-[#222528]  p-2 rounded'>
               <label className='font-semibold text-sm flex flex-col py-1 px-2'>
                 Holiday dates
-                <span className='text-2xs text-slate-500 font-semibold'>Select dates of public holidays</span>
+                <span className='text-xs text-slate-500 font-semibold'>Select dates of public holidays</span>
               </label>
               <button type='button' onClick={() => setShowHolidayCalendar(!showHolidayCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg'>
                 <BsCalendarDateFill className='text-black  rounded' size={30} />
@@ -944,7 +944,7 @@ const Home = () => {
             <div className='font-semibold text-sm'>
               Check your friend's attendance
             </div>
-            <span className='text-2xs text-slate-500 font-semibold'>login once, use it forever</span>
+            <span className='text-xs text-slate-500 font-semibold'>login once, use it forever</span>
           </label>
           <div className='flex items-center justify-around gap-1 mt-2'>
             <div className='flex flex-col gap-3'>
