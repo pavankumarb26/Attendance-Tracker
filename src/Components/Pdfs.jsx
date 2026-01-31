@@ -49,7 +49,7 @@ const Pdfs = () => {
             <div
               onClick={() => navigate(`/material/${branch}/${year}/${subject}`)}
               key={subject} className='text-white font-extrabold w-fit px-6  flex flex-col items-center justify-center gap-2 rounded-lg'>
-                <FaFolder size={70} className='text-[#03ff81]' />
+                <FaFolder size={60} className='text-[#03ff81]' />
                 <p className='text-center text-sm'>
 
               {subject}

@@ -6,10 +6,17 @@ import LoadingSpinner from '../Components/LoadingSpinner';
 const SearchPage = () => {
     const [search, setSearch] = useState();
     const [data, setData] = useState([]);
-    const [Loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const handleChange = (e) => {
         e.preventDefault();
         setSearch(e.target.value);
+    }
+    const handleFetchMore = () => {
+        if (totalPage > page) {
+            setPage(preve => preve + 1)
+        }
     }
     const handleSearch = async () => {
         try {
@@ -19,7 +26,7 @@ const SearchPage = () => {
             }
             const response = await axios.get(`https://database-9qqy.onrender.com/pdf/?search=${search}`);
             setData(response.data.data);
-
+            setTotalPages(response.data.data.totalPages);
 
         }
         catch (error) {
@@ -61,7 +68,7 @@ const SearchPage = () => {
     const closePreview = () => {
         setPreviewPdf(null);
     };
-   
+
     return (
         <section className='bg-black min-h-screen'>
 
@@ -72,12 +79,12 @@ const SearchPage = () => {
                 <button className='bg-[#03ff81] rounded p-3 flex justify-center items-center font-extrabold' onClick={handleSearch}> Search </button>
             </div>
             <div className='container mx-auto p-4'>
-                <p className='font-semibold text-white'>Search Results: {data.length}  </p>
+                <p className='font-semibold text-sm text-white'>Search Results: {data.length}  </p>
                 {
-                    Loading ? (
+                    loading ? (
                         <LoadingSpinner />
                     ) : (
-                        <InfiniteScroll dataLength={6}   loader={<LoadingSpinner/>}>
+                        <InfiniteScroll dataLength={data.length} hasMore={true} next={handleFetchMore}>
                             <div className='grid grid-cols-2'>
                                 {
                                     data.map((pdf, index) => {
@@ -96,6 +103,17 @@ const SearchPage = () => {
                                 }
                             </div>
                         </InfiniteScroll>
+                    )
+                }
+                {
+
+
+                    //no data 
+                    !data[0] && !loading && (
+                        <div className='flex flex-col justify-center items-center w-full mx-auto'>
+                            
+                            <p className='font-semibold my-25 text-sm text-slate-200'>No Data found</p>
+                        </div>
                     )
                 }
 

@@ -6,7 +6,11 @@ import Add from './Add';
 import Navbar from './Navbar';
 import LoadingSpinner from './LoadingSpinner';
 import Search from './Search';
-
+import { MdEdit } from "react-icons/md";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import Edit from './Edit';
+import Year from 'react-calendar/dist/DecadeView/Year.js';
+import Maintainance from './Maintainance';
 const Subject = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,7 +20,10 @@ const Subject = () => {
     const branch = params.branch;
     const year = params.year;
     const subject = params.subject;
-
+    const [edit, setEdit] = useState(false);
+    const [editPdfId, setEditPdfId] = useState({});
+    const [options, setOptions] = useState(false);
+    const [show, setShow] = useState(false);
     useEffect(() => {
         load();
     }, [branch, year, subject]);
@@ -27,6 +34,7 @@ const Subject = () => {
             const response = await axios.get(`https://database-9qqy.onrender.com/pdf/${branch}/${year}/${subject}`);
             if (response.data.success) {
                 setData(response.data.data);
+                console.log(response.data.data);
             }
         } catch (err) {
             console.error("Error fetching PDFs:", err);
@@ -69,10 +77,35 @@ const Subject = () => {
     const closePreview = () => {
         setPreviewPdf(null);
     };
+    const handleDelete = async () => {
 
+        try {
+            const redgNo = localStorage.getItem('redgNo');
+            const password = localStorage.getItem('password');
+            const pdfRedgNo = editPdfId.RedgNo;
+            if (redgNo !== pdfRedgNo) {
+                setShow(true);
+                return;
+            }
+            const response = await axios.delete(`https://database-9qqy.onrender.com`, {data: {
+                id: editPdfId.id,
+                redgNo,
+                password
+            }});
+            if (response.data.success) {
+                load();
+                setOptions(false);
+                setEdit(false);
+                setEditPdfId({});
+                setShow(false);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
     return (
         <section className='bg-black min-h-screen relative'>
-            <Search/>
+            <Search />
             <Add />
             <Navbar />
             <h2 className='text-slate-200 font-extrabold text-center mb-2 text-2xl'>{subject}</h2>
@@ -80,18 +113,43 @@ const Subject = () => {
                 loading ? (
                     <LoadingSpinner size={40} color='emerald' text='Loading...' />
                 ) : (
-                    <div className='bg-black text-slate-200 flex flex-wrap justify-evenly gap-3 pb-4'>
+                    <div className='bg-black text-slate-200 flex flex-wrap justify-evenly gap-2.5 pb-4'>
                         {
                             data.map((pdf, index) => {
                                 return (
-                                    <div key={index} className='border-2 border-[#222528] p-2 h-fit rounded-lg flex flex-col items-center gap-1'>
+                                    <div key={index} className='border-2 border-[#222528] px-2 py-3 h-fit rounded-lg flex flex-col items-center gap-1 w-45' >
+                                        <div className='w-full flex justify-end' onClick={() => { setEditPdfId((prev) => ({ ...prev, id: pdf._id, Branch: pdf.Branch, Year: pdf.Year, RedgNo: pdf.RedgNo })); setOptions(true) }}>
+                                            {
+                                                options ? (
+
+                                                    <div className='bg-[#222528] text-2xs font-semibold flex flex-col gap-0.5 rounded'>
+                                                        <div className='border-b border-black w-full px-4 text-center py-1.5' onClick={() => { setEdit(true); }}>Edit</div>
+                                                        <div className='px-4 text-center bg-red-600/40 py-1.5' onClick={handleDelete}>
+                                                            Delete
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <BsThreeDotsVertical />
+                                                )
+                                            }
+                                        </div>
                                         <FaFilePdf size={50} />
-                                        <p className='text-xs font-bold'>{pdf.Title}</p>
+                                        <p className='text-xs font-bold max-w-[150px] truncate'>{pdf.Title}</p>
                                         <div className='flex gap-2 text-xs font-bold'>
                                             <button className='bg-[#03ff81] text-black p-1 rounded px-2' onClick={() => handleView(pdf)}>View</button>
                                             <button className='bg-[#03ff81] text-black p-1 rounded px-2' onClick={() => handleDownload(pdf)}>Download</button>
                                         </div>
-                                        <p className='text-2xs pt-2'>Uploaded by <span className='font-bold'>{pdf.RedgNo}</span></p>
+                                        <p className='text-2xs pt-1'>Uploaded by <span className='font-bold'>*****{pdf.RedgNo.slice(-4)}</span></p>
+                                        <div className='flex flex-wrap gap-1'>
+                                            {
+
+                                                pdf.Branch.map((branch, index) => {
+                                                    return (
+                                                        <div className='text-2xs bg-yellow-300 font-extrabold rounded text-black px-1.5' key={index}>{branch}</div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
                                     </div>
                                 )
                             })
@@ -99,8 +157,16 @@ const Subject = () => {
                     </div>
                 )
             }
-
-
+            {
+                edit && (
+                    <Edit close={() => { setOptions(false); setEdit(false); setEditPdfId({}); }} pdfData={editPdfId} />
+                )
+            }
+            {
+                show && (
+                    <Maintainance message={"Only uploader can delete"} close={() => setShow(false)} />
+                )
+            }
 
             {previewPdf && (
                 <div

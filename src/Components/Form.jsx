@@ -18,10 +18,11 @@ const Form = ({ close }) => {
     
     const [data, setData] = useState({
         branch: branch ? [branch] : [],
-        year: year,
+        year: year ? [year] : [],
         subject: subject,
+        title: '',
     })
-    const notify = () => toast('Here is your toast.');
+    
 
     const handleOnChange = (e) => {
         const { name, value } = e.target;
@@ -69,13 +70,15 @@ const Form = ({ close }) => {
                 "https://database-9qqy.onrender.com/pdf/upload",
                 formData
             );
-
+            
             if (response.data.success) {
-                console.log(response.data);
+                
                 setData(prev => ({
                     ...prev,
-                    file: response.data.data.previewLink
+                    file: response.data.data.previewLink,
+                    title : response.data.data.original_name
                 }));
+                
             }
         } catch (err) {
             console.error(err);
@@ -87,27 +90,24 @@ const Form = ({ close }) => {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
-            
-            if (data.branch.length === 0) {
-                toast.error('Please select at least one branch');
+            const redgNo = localStorage.getItem("redgNo");
+            if (!redgNo) {
+                alert("Please login to continue");
                 return;
             }
-
-            const promises = data.branch.map(selectedBranch =>
-                axios.post("https://database-9qqy.onrender.com/pdf/submit", {
-                    Branch: selectedBranch,
+            const response = await axios.post("http://localhost:8000/pdf/submit", {
+                    Branch: data.branch,
                     Year: data.year,
                     Subject: data.subject,
                     Title: data.title,
                     Url: data.file,
                     RedgNo: localStorage.getItem("redgNo")
-                })
-            );
-
-            await Promise.all(promises);
-            toast.success('Uploaded successfully!');
+            });
+            console.log(response.data);
+            console.log(data);
+            
         } catch (error) {
-            toast.error('Upload failed');
+            console.error(error);
         } finally {
             close();
         }
@@ -226,19 +226,7 @@ const Form = ({ close }) => {
                                 required
                             />
                         </div>
-                        <div className='flex gap-2 items-center justify-evenly'>
-                            <label htmlFor="title" className='font-semibold text-sm'>Title</label>
-                            <input
-                                type='text'
-                                id='title'
-                                placeholder='UNIT-4'
-                                className=' bg-black border border-[#222528] outline-none focus:outline-none focus:ring-0 focus-visible:outline-none appearance-none text-center font-semibold rounded px-2 py-1 text-sm'
-                                onChange={handleOnChange}
-                                name="title"
-                                required
-                                value={data.title}
-                            />
-                        </div>
+                        
                         <label htmlFor="pdf">
 
                             <div className=' h-30 flex items-center justify-center bg-gray-950 rounded'>
