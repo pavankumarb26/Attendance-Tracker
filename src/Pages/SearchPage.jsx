@@ -92,7 +92,7 @@ const SearchPage = () => {
                         <LoadingSpinner />
                     ) : (
                         <InfiniteScroll dataLength={data.length} hasMore={page < totalPages} next={handleFetchMore}>
-                            <div className='grid grid-cols-2'>
+                            <div className='grid grid-cols-2 px-3 gap-4'>
                                 {
                                     data.map((pdf, index) => {
                                         return (
