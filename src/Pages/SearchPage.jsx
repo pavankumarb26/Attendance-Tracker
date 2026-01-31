@@ -25,7 +25,11 @@ const SearchPage = () => {
                 return;
             }
             const response = await axios.get(`https://database-9qqy.onrender.com/pdf/?search=${search}&page=${page}`);
-            setData(response.data.data);
+            setData(prev =>
+                page === 1
+                    ? response.data.data
+                    : [...prev, ...response.data.data]
+            );
             setTotalPages(response.data.data.totalPages);
 
         }
@@ -68,7 +72,7 @@ const SearchPage = () => {
     const closePreview = () => {
         setPreviewPdf(null);
     };
-    useEffect (()=> {
+    useEffect(() => {
         handleSearch();
     }, [page]);
     return (
@@ -86,7 +90,7 @@ const SearchPage = () => {
                     loading ? (
                         <LoadingSpinner />
                     ) : (
-                         <InfiniteScroll dataLength={data.length} hasMore={true} next={handleFetchMore}>
+                        <InfiniteScroll dataLength={data.length} hasMore={true} next={handleFetchMore}>
                             <div className='grid grid-cols-2'>
                                 {
                                     data.map((pdf, index) => {
@@ -113,7 +117,7 @@ const SearchPage = () => {
                     //no data 
                     !data[0] && !loading && (
                         <div className='flex flex-col justify-center items-center w-full mx-auto'>
-                            
+
                             <p className='font-semibold my-25 text-sm text-slate-200'>No Data found</p>
                         </div>
                     )
