@@ -22,6 +22,7 @@ const SearchPage = () => {
         try {
             setLoading(true);
             if (!search) {
+                setLoading(false);
                 return;
             }
             const response = await axios.get(`https://database-9qqy.onrender.com/pdf/?search=${search}&page=${page}`);
@@ -30,7 +31,7 @@ const SearchPage = () => {
                     ? response.data.data
                     : [...prev, ...response.data.data]
             );
-            setTotalPages(response.data.data.totalPages);
+            setTotalPages(response.data.totalPages);
 
         }
         catch (error) {
@@ -90,7 +91,7 @@ const SearchPage = () => {
                     loading ? (
                         <LoadingSpinner />
                     ) : (
-                        <InfiniteScroll dataLength={data.length} hasMore={true} next={handleFetchMore}>
+                        <InfiniteScroll dataLength={data.length} hasMore={page < totalPages} next={handleFetchMore}>
                             <div className='grid grid-cols-2'>
                                 {
                                     data.map((pdf, index) => {
