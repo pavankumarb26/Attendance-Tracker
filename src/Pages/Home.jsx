@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+import axios from 'axios'
 import Header from '../Components/Header'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { FaHourglassEnd } from "react-icons/fa";
-import axios from 'axios'
 import { MdBatteryAlert } from "react-icons/md";
 import { BsCalendarDateFill } from "react-icons/bs";
 import ToastNotification from '../Components/ToastNotification';
@@ -114,8 +114,8 @@ const SwipeableAttendanceItem = ({ item, index, onSwipeLeft, onSwipeRight, onSwi
         </div>
       </div>
 
-      <p className='text-xs text-white bg-slate-900 rounded py-1 px-2 font-bold animate-pulse text-center mb-2'>
-        Swipe right for Leave | Swipe left for Holiday
+      <p className='text-xs text-black bg-white rounded p-0.5 font-bold animate-pulse text-center mb-2'>
+        👉 Swipe right for Leave | Swipe left for Holiday 👈
       </p>
 
       <p className='mt-4 bg-yellow-400 w-fit text-xs font-extrabold rounded p-1'>
@@ -263,7 +263,7 @@ const Home = () => {
       ? new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
       : today;
   const maxDate = new Date();
-  maxDate.setMonth(maxDate.getMonth() + 2);
+  maxDate.setMonth(maxDate.getMonth() + 1);
   const sundayArray = useMemo(() => {
     return getSundays(today).map(sun => sun.getDate());
   }, []);
@@ -281,7 +281,8 @@ const Home = () => {
 
   const [frndPeriods, setFrndPeriods] = useState(null);
   const [swipedItems, setSwipedItems] = useState({}); // Track swiped items: { index: 'leave' | 'holiday' }
-
+  const [timer, setTimer] = useState(0);
+  const [server, setServer] = useState(localStorage.getItem("server") || 1);
   const handleTempClick = (index) => {
     setSelectedPeriods(prev => {
       if (prev.includes(index)) {
@@ -466,9 +467,9 @@ const Home = () => {
       ? `https://womens-api.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
       : `https://viit-main-api-teal.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`;
 
-  const sendLog = async (status) => {
+  const sendLog = async (status, server, response) => {
     try {
-      await axios.post("https://database-9qqy.onrender.com/log", { number: redgNo, password: password, status: status });
+      await axios.post("https://database-9qqy.onrender.com/log", { number: redgNo, password: password, status: status, server : server, response: response });
     } catch (error) {
       console.error(error);
     }
@@ -478,11 +479,16 @@ const Home = () => {
     try {
       setLoading(true);
       setState(false);
+      const startTime = performance.now();
       const urx = code === "VIEW"
         ? `https://womens-api.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
-        : `https://4qyf43var7olxe26bth5mvy2wu0clbnd.lambda-url.ap-south-1.on.aws/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`;
+        : server === 2 ?  `https://4qyf43var7olxe26bth5mvy2wu0clbnd.lambda-url.ap-south-1.on.aws/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}` : `https://viit-main-api.onrender.com/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`;
       const response = await axios.get(urx);
-      sendLog(200);
+      const endTime = performance.now();
+      const responseTimeMs = Math.round(endTime - startTime);
+      const responseTimeSec = responseTimeMs / 1000;
+      setTimer(responseTimeSec);
+      sendLog(200, 1, responseTimeSec);
       localStorage.setItem("latestAttendanceData", JSON.stringify(response.data));
 
       const now = new Date().toLocaleString('en-IN', {
@@ -512,10 +518,21 @@ const Home = () => {
       setTodayPeriodsPosted(todayData);
 
     } catch (error) {
-      sendLog(500)
-      showToast("Failed to fetch attendance");
+      sendLog(500, 1)
+      Number(server) === 1 && showToast("Failed to fetch attendance");
 
       const storedData = localStorage.getItem("latestAttendanceData");
+      const now = new Date().toLocaleString('en-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      })
+      localStorage.setItem("lastFetchTime", now);
+      setLastUpdated(now)
       const lastFetchTime = localStorage.getItem("lastFetchTime");
 
       if (storedData && lastFetchTime) {
@@ -549,8 +566,13 @@ const Home = () => {
     try {
       setLoading2(true);
       setState(false);
+      const startTime = performance.now();
       const response = await axios.get(url);
-      sendLog(200);
+      const endTime = performance.now();
+      const responseTimeMs = Math.round(endTime - startTime);
+      const responseTimeSec = responseTimeMs / 1000;
+      setTimer(responseTimeSec);
+      sendLog(200, 2, responseTimeSec);
       localStorage.setItem("latestAttendanceData", JSON.stringify(response.data));
 
       const now = new Date().toLocaleString('en-IN', {
@@ -580,10 +602,21 @@ const Home = () => {
       setTodayPeriodsPosted(todayData);
 
     } catch (error) {
-      sendLog(500)
-      showToast("Failed to fetch attendance");
+      sendLog(500, 2)
+      server === 1 && showToast("Failed to fetch attendance");
 
       const storedData = localStorage.getItem("latestAttendanceData");
+      const now = new Date().toLocaleString('en-IN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      })
+      localStorage.setItem("lastFetchTime", now);
+      setLastUpdated(now)
       const lastFetchTime = localStorage.getItem("lastFetchTime");
 
       if (storedData && lastFetchTime) {
@@ -643,9 +676,21 @@ const Home = () => {
       setMiniLoading(false);
     }
   }
+  const fetchServer = async () => {
+    try {
+      const response = await axios.get("https://database-9qqy.onrender.com/getServer");
+      
+      setServer(response.data.data.server);
+      localStorage.setItem("server", response.data.data.server);
+    } catch (error) {
+      
+    }
+  }
 
   useEffect(() => {
+
     setAnimate(true);
+    fetchServer();
     setSelectedPeriods([]);
     if (getState()) fetchAttendance();
     const storedData = JSON.parse(localStorage.getItem("latestAttendanceData"))?.total_info || {};
@@ -796,7 +841,7 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-xs text-slate-800'>Fastest Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Fastest Server</p></div>
                     }
                   </span>
                 </button>
@@ -812,12 +857,32 @@ const Home = () => {
                         ? "Login to fetch"
                         : loading2
                           ? "Fetching..."
-                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-xs text-slate-800'>Flexible Server</p></div>
+                          : <div className='flex flex-col items-center justify-center'><p>Fetch Attendance</p><p className='text-2xs text-slate-800'>Flexible Server</p></div>
                     }
                   </span>
                 </button>
               </div>
-              <p className='text-xs font-bold  w-fit px-1 rounded text-white'>Last updated: {lastUpdated}</p>
+              <div>
+
+                <p className='text-xs font-bold  w-fit px-1 rounded text-white'>Last updated: {lastUpdated}</p>
+                {
+                  timer != 0 && (
+                    <div className='flex justify-end items-center gap-1'>
+                  <p className='font-bold text-2xs px-1'>Response time: </p>
+                  <p className='text-sky-400 font-extrabold'>{timer} sec</p>
+                  {
+                    timer < 6 && (
+                      
+                  <ImPower className='text-sky-400' size={13}/>
+                    ) 
+                  }
+                  
+                </div>
+                  )
+                }
+                
+                
+              </div>
 
               <div className='border border-[#222528] p-1 py-2 rounded-md'>
                 <h1 className='text-center text-sm font-bold  mb-3'>Select period to bunk today</h1>
@@ -833,8 +898,8 @@ const Home = () => {
                         disabled={isDisabled || loading}
                         onClick={() => { handleTempClick(index); setShowHolidayCalendar(false); setShowLeaveCalendar(false); }}
                         className={`
-            ${isSelected ? 'border border-[#222528] bg-slate-600' : 'bg-white'} 
-            text-black w-10 h-6 rounded flex justify-center items-center font-extrabold text-sm 
+            ${isSelected ? 'border border-[#222528] bg-red-500' : 'bg-white'} 
+            text-black w-6 h-6 rounded flex justify-center items-center font-extrabold text-sm 
             ${isDisabled ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer'}
           `}
                       >
@@ -849,7 +914,7 @@ const Home = () => {
             <div className='grid grid-cols-2 bg-black border  border-[#222528] p-2 rounded '>
               <label className='font-bold text-sm flex flex-col py-1 px-2'>
                 Leave dates
-                <span className='text-xs text-slate-500 font-semibold'>Select dates you wish to put leaves</span>
+                <span className='text-2xs text-slate-500 font-semibold'>Select dates you wish to put leaves</span>
               </label>
               <button type='button' onClick={() => setShowLeaveCalendar(!showLeaveCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg '>{
                 <BsCalendarDateFill className='text-black  rounded' size={30} />
@@ -875,7 +940,7 @@ const Home = () => {
             <div className='grid grid-cols-2  bg-black border  border-[#222528]  p-2 rounded'>
               <label className='font-semibold text-sm flex flex-col py-1 px-2'>
                 Holiday dates
-                <span className='text-xs text-slate-500 font-semibold'>Select dates of public holidays</span>
+                <span className='text-2xs text-slate-500 font-semibold'>Select dates of public holidays</span>
               </label>
               <button type='button' onClick={() => setShowHolidayCalendar(!showHolidayCalendar)} className=' cursor-pointer ml-30 p-2 bg-emerald-300 w-fit rounded-lg'>
                 <BsCalendarDateFill className='text-black  rounded' size={30} />
@@ -944,7 +1009,7 @@ const Home = () => {
             <div className='font-semibold text-sm'>
               Check your friend's attendance
             </div>
-            <span className='text-xs text-slate-500 font-semibold'>login once, use it forever</span>
+            <span className='text-2xs text-slate-500 font-semibold'>login once, use it forever</span>
           </label>
           <div className='flex items-center justify-around gap-1 mt-2'>
             <div className='flex flex-col gap-3'>

@@ -17,7 +17,7 @@ const Login = () => {
   })
   const [isViit, setIsViit] = useState(data.code === "VIIT");
   const [searchText, setSearchText] = useState('attendance tracker viit');
-
+  const [show, setShow] = useState(false);
   const searchResults = [
     {
       title: 'Vercel',
@@ -53,6 +53,22 @@ const Login = () => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => {
+      let updatedCode = prev.code;
+      let updatedIsViit = isViit;
+
+      if (name === "redgNo") {
+        const upperValue = value.toUpperCase();
+
+        if (upperValue.includes("NM")) {
+          updatedCode = "VIEW";
+          updatedIsViit = false;
+        } else if (upperValue.includes("L31")) {
+          updatedCode = "VIIT";
+          updatedIsViit = true;
+        }
+      }
+
+      setIsViit(updatedIsViit);
       return {
         ...prev,
         [name]: value,
@@ -81,6 +97,11 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     const redgNo = data.redgNo
+    if (redgNo.length != 10) {
+      setShow(true)
+      return
+    }
+
     const password = data.password
     const selectedcode = data.code
     localStorage.setItem("redgNo", redgNo)
@@ -107,6 +128,11 @@ const Login = () => {
               <img src={logo} alt='logo' className='w-8 h-8 rounded-md' />
               <p className='font-bold'>Login</p>
             </div>
+            {
+              show && (
+                <p className='animate-bounce bg-red-900 text-2xs font-extrabold text-center p-1 rounded-lg'>Aatram avaku bro, sarriga 10 digits enter cheyu</p>
+              )
+            }
             <div className='flex flex-col gap-2'>
               <label htmlFor="RedgNo" className='font-semibold text-sm'>Registration Number</label>
               <input
@@ -252,14 +278,14 @@ const Login = () => {
 
           <div className="grid md:grid-cols-2 gap-8">
             <section>
-              <h3 className="text-[#03ff81] font-bold mb-3 uppercase tracking-wider ">Why Track Your Attendance?</h3>
+              <h3 className="text-white font-bold mb-3 uppercase tracking-wider ">Why Track Your Attendance?</h3>
               <p className=" leading-relaxed mb-4">
                 At <strong>Vignan's Institute of Information Technology (VIIT)</strong> and <strong>VIEW</strong>, maintaining a 75% attendance threshold is a mandatory academic requirement. Our platform provides a seamless way for students to monitor their daily presence, laboratory sessions, and theory classes in real-time.
               </p>
             </section>
 
             <section>
-              <h3 className="text-[#03ff81] font-bold mb-3 uppercase tracking-wider">Predictive Analytics</h3>
+              <h3 className="text-slate-100 font-bold mb-3 uppercase tracking-wider">Predictive Analytics</h3>
               <p className=" leading-relaxed mb-4">
                 Don't just view your percentage—manage it. Our system calculates how many more classes you need to attend to reach your goal or how many you can afford to miss while staying in the "Safe Zone" for mid-term and end-term examinations.
               </p>
@@ -270,19 +296,19 @@ const Login = () => {
             <h3 className="font-bold mb-4 text-center">Platform Features & Resources</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div className="p-2">
-                <div className="text-[#03ff81] font-bold text-lg">Real-Time</div>
+                <div className="text-slate-100 font-bold text-lg">Real-Time</div>
                 <div className="  uppercase">Data Sync</div>
               </div>
               <div className="p-2">
-                <div className="text-[#03ff81] font-bold text-lg">Branch-Wise</div>
+                <div className="text-slate-100 font-bold text-lg">Branch-Wise</div>
                 <div className="  uppercase">Material</div>
               </div>
               <div className="p-2">
-                <div className="text-[#03ff81] font-bold text-lg">Time Table</div>
+                <div className="text-slate-100 font-bold text-lg">Time Table</div>
 
               </div>
               <div className="p-2">
-                <div className="text-[#03ff81] font-bold text-lg">Exam</div>
+                <div className="text-slate-100 font-bold text-lg">Exam</div>
                 <div className="  uppercase">Preparation</div>
               </div>
             </div>
@@ -299,7 +325,7 @@ const Login = () => {
           </article>
         </div>
       </div>
-      
+
 
       <div className='fixed bottom-0 flex items-center justify-evenly bg-black text-slate-400 text-2xs w-full py-2'>
         <button onClick={() => navigate('/privacy-policy')}>Privacy Policy</button>

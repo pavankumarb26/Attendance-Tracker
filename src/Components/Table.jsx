@@ -43,7 +43,7 @@ const Table = () => {
                 const registerData = await axios.get(register_api);
                 setData(registerData.data.attendance_table.rows);
                 setHeatmap(registerData.data)
-                
+
             } catch (err) {
                 console.error("Timetable fetch failed");
             } finally {
@@ -66,18 +66,28 @@ const Table = () => {
 
     if (loading) {
         return (
-            <section className="flex justify-center bg-black  min-h-screen">
-                
-                <Navbar/>
-                <div className="fixed top-20 left-0 right-0 z-50 p-4 bg-black flex justify-center">
-                    <div className="flex items-center gap-3 w-80">
-                        <div className="flex-1 bg-gray-700 rounded-full h-2">
+            <section className="flex justify-center bg-black min-h-screen">
+
+                <Navbar />
+
+                <div className="fixed top-2 left-0 right-0 p-4 gap-4 bg-black flex flex-col items-center justify-center">
+                    <div className="flex items-center gap-3 w-[50%]">
+                        <div className="flex-1 bg-[#222528] animate-pulse rounded-full h-3">
                             <div
                                 className="bg-emerald-500 h-full rounded transition-all duration-900 ease-in-out"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
                         <span className="text-sm text-white w-12 font-bold">{progress}%</span>
+                    </div>
+                    <div className="border border-[#222528]  w-[95%] h-90 rounded-2xl flex flex-col items-center gap-2 justify-center">
+                        <div className="bg-[#222528] rounded-md w-[95%] h-10 animate-pulse"></div>
+                        <div className="bg-[#222528] rounded-md w-[95%] h-40 animate-pulse"></div>
+                        <div className="bg-[#222528] rounded-md w-[95%] h-30 animate-pulse"></div>
+                    </div>
+                    <div className="border border-[#222528]  w-[95%] h-45 rounded-2xl flex flex-col items-center gap-2 justify-center">
+                        <div className="bg-[#222528] rounded-md w-[95%] h-5 animate-pulse"></div>
+                        <div className="bg-[#222528] rounded-md w-[95%] h-30 animate-pulse"></div>
                     </div>
                 </div>
             </section>
@@ -90,7 +100,7 @@ const Table = () => {
             {/* <Header /> */}
             <Navbar />
             <div className='bg-black mt-5 p-4 text-slate-200  overflow-y-auto '>
-                
+
 
                 {data.length === 0 ?
                     (
@@ -151,7 +161,7 @@ const Table = () => {
             </div>
 
             <div>
-                <AttendanceStreakCalculator response={heatmap}/>
+                <AttendanceStreakCalculator response={heatmap} />
             </div>
 
 
