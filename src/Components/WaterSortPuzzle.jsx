@@ -297,7 +297,7 @@ const WaterSortPuzzle = () => {
           </div>
         )}
 
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
+        <div className="flex flex-wrap justify-center gap-4 mt-30 mb-6">
           {tubes.map((tube, index) => (
             <div
               key={index}
