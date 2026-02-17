@@ -12,7 +12,7 @@ const Table = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
     const [progress, setProgress] = useState(0);
-    const [heatmap, setHeatmap] = useState()
+    const [server, setServer] = useState(localStorage.getItem("server") || 1);
     const code = localStorage.getItem("code");
     const redgNo = localStorage.getItem("redgNo");
     const password = localStorage.getItem("password");
@@ -20,12 +20,22 @@ const Table = () => {
     const register_api =
         code === "VIEW"
             ? `https://women-register-microservice.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
-            : `https://register-api-green.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
+            : server === 2 ? `https://register-api-green.vercel.app/attendance?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)} : https://viit-main-api.onrender.com/register?student_id=${encodeURIComponent(redgNo)}&password=${encodeURIComponent(password)}`
 
 
 
-
+    const fetchServer = async () => {
+    try {
+      const response = await axios.get("https://database-9qqy.onrender.com/getServer");
+      
+      setServer(response.data.data.server);
+      localStorage.setItem("server", response.data.data.server);
+    } catch (error) {
+      
+    }
+  }
     useEffect(() => {
+        fetchServer();
         let interval;
         if (!redgNo || !password) {
             // navigate("/");
