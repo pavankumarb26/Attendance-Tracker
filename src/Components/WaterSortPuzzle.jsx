@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { RotateCcw, Trophy, Play } from 'lucide-react';
 import Navbar from './Navbar';
 
@@ -97,11 +98,20 @@ const WaterSortPuzzle = () => {
     return levels;
   };
 
-  const loadLevel = () => {
+  const loadLevel = async () => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const redgNo = localStorage.getItem("redgNo");
+      const password = localStorage.getItem("password");
+      if (!redgNo || !password) {
+        const local = localStorage.getItem(STORAGE_KEY);
+        const parsed = local ? parseInt(local, 10) : NaN;
+        return (parsed >= 1 && parsed <= 100) ? parsed : 1;
+      }
+      const saved = await axios.post('https://database-9qqy.onrender.com/getLevel', {
+        redgNo, password
+      });
       if (saved) {
-        const level = parseInt(saved, 10);
+        const level = saved.data.level || 1;
         if (level >= 1 && level <= 100) {
           return level;
         }
@@ -112,29 +122,43 @@ const WaterSortPuzzle = () => {
     return 1;
   };
 
-  const saveLevel = (level) => {
+  const saveLevel = async(level) => {
     try {
-      localStorage.setItem(STORAGE_KEY, level.toString());
+      const redgNo = localStorage.getItem("redgNo");
+      const password = localStorage.getItem("password");
+      if (redgNo && password) {
+        await axios.post('https://database-9qqy.onrender.com/postLevel', {
+          redgNo, password, level
+        });
+      }
+      else localStorage.setItem(STORAGE_KEY, level.toString());
     } catch (error) {
       console.error('Error saving level:', error);
     }
   };
 
   const [levels] = useState(generateLevels());
-  const [currentLevel, setCurrentLevel] = useState(loadLevel());
-  const [tubes, setTubes] = useState([]);
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [tubes, setTubes] = useState(() => levels[0].tubes);
   const [selectedTube, setSelectedTube] = useState(null);
   const [moveCount, setMoveCount] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
   const [history, setHistory] = useState([]);
 
   useEffect(() => {
-    setTubes(levels[currentLevel - 1].tubes);
-  }, []);
+    let cancelled = false;
+    loadLevel().then((level) => {
+      if (cancelled) return;
+      const lvl = Math.max(1, Math.min(100, level));
+      setCurrentLevel(lvl);
+      setTubes(levels[lvl - 1].tubes);
+    });
+    return () => { cancelled = true; };
+  }, [levels]);
 
   useEffect(() => {
     checkWinCondition();
-  }, [tubes]);
+  }, [tubes, moveCount]);
 
   const checkWinCondition = () => {
     const allComplete = tubes.every(tube => {
@@ -331,7 +355,7 @@ const WaterSortPuzzle = () => {
           <button
             onClick={undo}
             disabled={history.length === 0}
-            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-3 py-1 bg-[#03ff81] text-black rounded font-extrabold hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             
           <RotateCcw className="w-5 h-5" />
@@ -339,13 +363,13 @@ const WaterSortPuzzle = () => {
           </button>
           <button
             onClick={resetLevel}
-            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-red-600 transition flex items-center gap-2"
+            className="px-3 py-1 bg-[#03ff81] text-black rounded font-extrabold hover:bg-red-600 transition flex items-center gap-2"
           >
             Reset Level
           </button>
           <button
             onClick={clearProgress}
-            className="px-3 py-1 bg-[#03ff81] textblack rounded font-extrabold hover:bg-purple-600 transition"
+            className="px-3 py-1 bg-[#03ff81] text-black rounded font-extrabold hover:bg-purple-600 transition"
           >
             Start from Level 1
           </button>
