@@ -4,29 +4,37 @@ export default function AdUnit() {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Set ad options
+    window.atOptions = {
+      key: '9b279b5dd8f20092a79db1a298178521',
+      format: 'iframe',
+      height: 50,
+      width: 320,
+      params: {}
+    };
+
+    // Create invoke script
     const script = document.createElement('script');
-    script.src = 'https://pl28735180.effectivegatecpm.com/9655042b83c3e89d71ab71635098f4f4/invoke.js';
+    script.src = 'https://www.highperformanceformat.com/9b279b5dd8f20092a79db1a298178521/invoke.js';
     script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    
-    // Append script INSIDE the container div
-    if (containerRef.current) {
-      containerRef.current.appendChild(script);
-    }
+
+    containerRef.current.appendChild(script);
 
     return () => {
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
+      delete window.atOptions;
     };
   }, []);
 
   return (
-    <div 
+    <div
       ref={containerRef}
-      id="container-9655042b83c3e89d71ab71635098f4f4"
-      className="w-full my-4"
-    >
-    </div>
+      style={{ width: '320px', height: '50px' }}
+      className="my-4 mx-auto"
+    />
   );
 }
