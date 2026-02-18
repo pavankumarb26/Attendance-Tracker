@@ -1,19 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 export default function AdUnit() {
+  const initialized = useRef(false);
+
   useEffect(() => {
-    const script = document.createElement("script");
+    if (initialized.current) return;
+    initialized.current = true;
 
-    script.settings = {};
-    script.src =
+    const d = document;
+    const s = d.createElement("script");
+    const l = d.scripts[d.scripts.length - 1];
+    s.src =
       "//rapid-university.com/b.X/VzsVdWGild0yY/W/cL/meums9/uAZnUBl/kUPtTtYF4DMsTmEx2wOxDOE/tXN_jQgTxJMZTWY_4/NfQH";
-    script.async = true;
-    script.referrerPolicy = "no-referrer-when-downgrade";
-
-    document.body.appendChild(script);
+    s.async = true;
+    s.referrerPolicy = "no-referrer-when-downgrade";
+    l.parentNode.insertBefore(s, l);
 
     return () => {
-      document.body.removeChild(script);
+      // Optional cleanup if the script adds global state
     };
   }, []);
 
