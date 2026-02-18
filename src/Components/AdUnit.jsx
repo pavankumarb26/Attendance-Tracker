@@ -1,40 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 export default function AdUnit() {
-  const containerRef = useRef(null);
-
   useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Set ad options
-    window.atOptions = {
-      key: '9b279b5dd8f20092a79db1a298178521',
-      format: 'iframe',
-      height: 50,
-      width: 320,
-      params: {}
-    };
-
-    // Create invoke script
     const script = document.createElement('script');
-    script.src = 'https://www.highperformanceformat.com/9b279b5dd8f20092a79db1a298178521/invoke.js';
+    script.src = 'https://pl28735180.effectivegatecpm.com/9655042b83c3e89d71ab71635098f4f4/invoke.js';
     script.async = true;
-
-    containerRef.current.appendChild(script);
+    script.setAttribute('data-cfasync', 'false');
+    document.body.appendChild(script);
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
-      }
-      delete window.atOptions;
+      document.body.removeChild(script);
     };
   }, []);
 
-  return (
-    <div
-      ref={containerRef}
-      style={{ width: '320px', height: '50px' }}
-      className="my-4 mx-auto"
-    />
-  );
+  return <div id="container-9655042b83c3e89d71ab71635098f4f4"></div>;
 }
