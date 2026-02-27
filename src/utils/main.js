@@ -5,6 +5,11 @@ import {
   attendencePerform
 } from './utils.js';
 
+function toIST(date) {
+  const ist = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  return new Date(ist.getFullYear(), ist.getMonth(), ist.getDate());
+}
+
 function attendenceCalculator(
   holidays = [],
   leaves = [],
@@ -19,18 +24,10 @@ function attendenceCalculator(
   let present = periods_present;
   let held = total_periods_held;
 
-  let current = new Date(Date.UTC(
-    startDate.getUTCFullYear(),
-    startDate.getUTCMonth(),
-    startDate.getUTCDate()
-  ));
+  let current = toIST(startDate);
 
   for (let i = 0; i < daysToPredict; i++) {
-    const day = new Date(Date.UTC(
-      current.getUTCFullYear(),
-      current.getUTCMonth(),
-      current.getUTCDate()
-    ));
+    const day = new Date(current.getFullYear(), current.getMonth(), current.getDate());
 
     const isSunday = sundayChecker(sundays, day);
     const isHoliday = holidayChecker(holidays, day);
@@ -51,13 +48,9 @@ function attendenceCalculator(
     let additionalHoursNeeded = 0;
 
     if (attendancePercentage < 75) {
-      additionalHoursNeeded = Math.ceil(
-        ((0.75 * held) - present) / 0.25
-      );
+      additionalHoursNeeded = Math.ceil(((0.75 * held) - present) / 0.25);
     } else {
-      hoursCanSkip = Math.floor(
-        (present - 0.75 * held) / 0.75
-      );
+      hoursCanSkip = Math.floor((present - 0.75 * held) / 0.75);
     }
 
     let status;
@@ -69,7 +62,12 @@ function attendenceCalculator(
       status = 2;
     }
 
-    const dayString = day.toUTCString().split(' ').slice(1, 4).join(' ');
+    const dayString = day.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      timeZone: 'Asia/Kolkata'
+    });
 
     result.push({
       day: dayString,
@@ -84,7 +82,7 @@ function attendenceCalculator(
       isHoliday
     });
 
-    current.setUTCDate(current.getUTCDate() + 1);
+    current.setDate(current.getDate() + 1);
   }
 
   return result;
