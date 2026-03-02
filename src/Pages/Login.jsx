@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Header from '../Components/Header'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
-// import ToastNotification, { showToast } from '../Components/ToastNotification';
-import { MdAccountBox } from "react-icons/md"
 import logo from '../assets/logo.png'
 import { setState } from './Home';
 import { MessageCircle, Search, X, Mic } from 'lucide-react';
@@ -47,21 +44,8 @@ const Login = () => {
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setData((prev) => {
-      let updatedCode = prev.code;
       let updatedIsViit = isViit;
-
-      if (name === "redgNo") {
-        const upperValue = value.toUpperCase();
-
-        if (upperValue.includes("NM")) {
-          updatedCode = "VIEW";
-          updatedIsViit = false;
-        } else if (upperValue.includes("L31")) {
-          updatedCode = "VIIT";
-          updatedIsViit = true;
-        }
-      }
-
+      if (name === "redgNo") updatedIsViit = value.includes("NM") ? false : true;
       setIsViit(updatedIsViit);
       return {
         ...prev,
@@ -69,7 +53,6 @@ const Login = () => {
       }
     })
   }
-
   const handleViit = () => {
     setData((prev) => {
       return {
@@ -98,8 +81,8 @@ const Login = () => {
 
     const password = data.password
     const selectedcode = data.code
-    localStorage.setItem("redgNo", redgNo)
-    localStorage.setItem("password", password)
+    localStorage.setItem("redgNo", redgNo.toUpperCase())
+    localStorage.setItem("password", password.trim())
     localStorage.setItem("code", selectedcode)
 
     setState(true)
@@ -110,7 +93,6 @@ const Login = () => {
 
   return (
     <section className='bg-black min-h-screen text-slate-200 flex flex-col items-center'>
-        {/* <AdUnit2/> */}
       <div className='flex mt-5.5 flex-col items-center justify-center'>
         <p className='font-bold text-3xl'>Attendance</p>
         <p className='font-bold text-4xl text-emerald-500'>Tracker</p>
@@ -152,20 +134,7 @@ const Login = () => {
                 value={data.password}
               />
             </div>
-            <div className='flex justify-around gap-2'>
-              <div
-                className={`${isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`}
-                onClick={handleViit}
-              >
-                VIIT
-              </div>
-              <div
-                className={`${!isViit ? "bg-white text-black" : "border border-[#222528]"} w-full cursor-pointer rounded-2xl py-1.5 text-center text-xs font-semibold`}
-                onClick={handleView}
-              >
-                VIEW
-              </div>
-            </div>
+            
             <button className='bg-[#03ff81] text-black cursor-pointer rounded py-1.5 font-bold text-sm'>
               Submit
             </button>
@@ -173,7 +142,16 @@ const Login = () => {
           </form>
         </div>
       </div>
-      {/* <AdUnit2/> */}
+      <div className='border border-[#222528] bg-[#0a0a0a] rounded-2xl w-85 p-5 animate-pulse'>
+          
+            <div className='flex justify-center items-center gap-1'>
+              <img src={logo} alt='logo' className='w-8 h-8 rounded-md' />
+              <p className='font-bold text-pink-500  text-lg'>Attendance Tracker (VIEW)</p>
+            </div>
+            
+            <div className='font-bold text-center text-sm'>Only for women's campus</div>
+          <Link to={'https://attendance-tracker-womens.vercel.app/'} className='font-bold text-xs text-sky-500'>https://attendance-tracker-womens.vercel.app</Link>
+        </div>
       {/* WhatsApp Share Section */}
       <div className='flex flex-col items-center gap-2 my-4'>
         <p className='font-extrabold'>Share to your friends</p>
@@ -185,7 +163,6 @@ const Login = () => {
           <span>Share on WhatsApp</span>
         </button>
       </div>
-      {/* <AdUnit1/> */}
       <p className='font-extrabold text-lg mt-8'>Search on Google</p>
       <div className="w-full bg-black text-white rounded-4xl">
         {/* Search Bar */}
